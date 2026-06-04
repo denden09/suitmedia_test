@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart'
+    as http;
 
 import '../models/user_model.dart';
 
@@ -12,11 +13,19 @@ class ApiService {
       int page) async {
     final response = await http.get(
       Uri.parse(
-          'https://reqres.in/api/users?page=$page&per_page=10'),
+        'https://reqres.in/api/users?page=$page&per_page=10',
+      ),
       headers: {
         'x-api-key': apiKey,
       },
     );
+
+    if (response.statusCode !=
+        200) {
+      throw Exception(
+        'Failed to load users',
+      );
+    }
 
     final json =
         jsonDecode(response.body);
@@ -25,7 +34,8 @@ class ApiService {
         (json['data'] as List)
             .map(
               (e) =>
-                  UserModel.fromJson(e),
+                  UserModel.fromJson(
+                      e),
             )
             .toList();
 
